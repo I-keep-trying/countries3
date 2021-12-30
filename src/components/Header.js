@@ -4,10 +4,10 @@ import '../assets/css/App.css'
 import { isMobile } from 'react-device-detect'
 
 const HeaderNav = ({
-  visible,
+  // visible,
   reset,
   setMenu,
-  visibilityToggle,
+  //  visibilityToggle,
   input,
   setInput,
   countries,
@@ -48,7 +48,7 @@ const HeaderNav = ({
 
   const closeMobileMenu = () => {
     reset()
-    visibilityToggle()
+    // visibilityToggle()
     setMenu(false)
   }
 
@@ -56,7 +56,7 @@ const HeaderNav = ({
     <>
       <Menu inverted fixed="top" borderless>
         <Menu.Item style={{ padding: 0 }} header>
-          {isMobile ? (
+          {/*           {isMobile ? (
             <>
               {visible ? (
                 <Icon
@@ -77,7 +77,7 @@ const HeaderNav = ({
             </>
           ) : (
             <Icon className="App-logo" name="globe" color="teal" size="big" />
-          )}
+          )} */}
           <p> World Countries</p>
         </Menu.Item>
         <Menu.Item>

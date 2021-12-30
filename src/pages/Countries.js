@@ -9,7 +9,7 @@ import {
   Table,
   Message,
 } from 'semantic-ui-react'
-// import Country from './Country'
+import Country from './Country'
 import HeaderNav from '../components/Header'
 import countriesApiData from '../all-countries'
 import countriesBasicInfo from '../countriesList'
@@ -109,19 +109,12 @@ const Countries = () => {
         <Table.Body>
           {filterBySubregion.map((c) => {
             return (
-              <>
-                <Table.Row key={c.id} onClick={() => handleClick(c)}>
-                  <Table.Cell width="two">
-                    <Image
-                      size="tiny"
-                      src={c.flag}
-                      alt="country flag"
-                      bordered
-                    />
-                  </Table.Cell>
-                  <Table.Cell>{c.name}</Table.Cell>
-                </Table.Row>
-              </>
+              <Table.Row key={c.id} onClick={() => handleClick(c)}>
+                <Table.Cell width="two">
+                  <Image size="tiny" src={c.flag} alt="country flag" bordered />
+                </Table.Cell>
+                <Table.Cell>{c.name}</Table.Cell>
+              </Table.Row>
             )
           })}
         </Table.Body>
@@ -142,6 +135,105 @@ const Countries = () => {
         setActiveRegion={setActiveRegion}
         setActiveSubregion={setActiveSubregion}
       />
+      {getCountryData.length === 1 ? (
+        <>
+          <Country
+            flag={filterBySubregion[0].flag}
+            reset={reset}
+            setInput={setInput}
+            setRegion={setRegion}
+            isLoading={isLoading}
+            country={getCountryData[0]}
+            setCountry={setCountry}
+            region={region}
+            subregion={subregion}
+            setSubRegion={setSubRegion}
+            setIsLoading={setIsLoading}
+            setActiveRegion={setActiveRegion}
+            setActiveSubregion={setActiveSubregion}
+          />
+        </>
+      ) : (
+        <>
+          <Container
+            style={
+              filterBySubregion.length < 250
+                ? { marginTop: 86 }
+                : { marginTop: 95 }
+            }
+            fluid
+          >
+            <Grid style={isMobile ? { marginTop: 0 } : { marginTop: -6 }}>
+              {getSubregions[0].subregions.length > 0 ? (
+                <>
+                  <Grid.Row>
+                    <Menu
+                      stackable
+                      size={isMobile ? 'mini' : 'large'}
+                      fixed="top"
+                      style={isMobile ? { marginTop: 45 } : { marginTop: 45 }}
+                      widths={7}
+                    >
+                      {regions.map((r) => {
+                        return (
+                          <Menu.Item
+                            key={r.id}
+                            name={r.region}
+                            active={activeRegion === r.region}
+                            onClick={handleRegionClick}
+                          />
+                        )
+                      })}
+                    </Menu>
+                    <Menu
+                      stackable
+                      size={isMobile ? 'mini' : 'large'}
+                      fixed="top"
+                      style={isMobile ? { marginTop: 75 } : { marginTop: 89 }}
+                      widths={getSubregions[0].subregions.length}
+                    >
+                      {getSubregions[0].subregions.map((rs) => (
+                        <Menu.Item
+                          key={rs}
+                          name={rs}
+                          active={activeSubregion === rs}
+                          onClick={handleSubregionClick}
+                        />
+                      ))}
+                    </Menu>
+                  </Grid.Row>
+                </>
+              ) : (
+                <>
+                  <Grid.Row style={{ margin: 0, padding: 0 }}>
+                    <Menu
+                      stackable
+                      size={isMobile ? 'mini' : 'large'}
+                      fixed="top"
+                      style={isMobile ? { marginTop: 45 } : { marginTop: 45 }}
+                      widths={7}
+                    >
+                      {regions.map((r) => (
+                        <Menu.Item
+                          key={r.id}
+                          name={r.region}
+                          active={activeRegion === r.region}
+                          onClick={handleRegionClick}
+                        />
+                      ))}
+                    </Menu>
+                  </Grid.Row>
+                </>
+              )}
+            </Grid>
+            {filterBySubregion.length === 0 ? (
+              <NoMatches />
+            ) : (
+              <CountriesTable />
+            )}
+          </Container>
+        </>
+      )}
     </>
   )
 }
