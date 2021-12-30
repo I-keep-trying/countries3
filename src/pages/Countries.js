@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { isMobile } from 'react-device-detect'
+import _ from 'lodash'
+import React, { useState, useReducer } from 'react'
 import {
   Container,
   Button,
@@ -51,14 +51,16 @@ const Countries = () => {
   })
 
   // handle click of "Details" button
-  const handleClick = (c) => {
+  const handleClick = (name) => {
     // pass full country details from api data
     const countryData = getCountryData.filter((cd) => {
-      return cd.name.toLowerCase().startsWith(c.name.toLowerCase())
+      return cd.name.toLowerCase().startsWith(name.toLowerCase())
     })
+    console.log('handleClick:name', name)
+    console.log('countryData', getCountryData)
     setIsLoading(true)
-    setCountry(countryData[0].name)
-    setInput(c.name)
+    // setCountry(countryData[0].name)
+    setInput(name)
   }
 
   // handle click of a region tab
@@ -97,31 +99,109 @@ const Countries = () => {
       </Message>
     </Container>
   )
+
   const marg1 = activeRegion === 'All' ? 14 : 38
 
-  const CountriesTable = () => (
-    <>
+  // reducer for table sort functionality
+
+  function tableReducer(state, action) {
+    switch (action.type) {
+      case 'CHANGE_SORT':
+        if (state.column === action.column) {
+          return {
+            ...state,
+            data: state.data.slice().reverse(),
+            direction:
+              state.direction === 'ascending' ? 'descending' : 'ascending',
+          }
+        }
+        return {
+          column: action.column,
+          data: _.sortBy(state.data, [action.column]),
+          direction: 'ascending',
+        }
+      default:
+        throw new Error()
+    }
+  }
+
+  const CountriesTable = () => {
+    const [state, dispatch] = useReducer(tableReducer, {
+      column: null,
+      data: filterBySubregion,
+      direction: null,
+    })
+
+    const { column, data, direction } = state
+
+    return (
       <Table
-        style={isMobile ? { marginTop: 0 } : { marginTop: marg1 }}
+        sortable
+        style={{ marginTop: 45 }}
+        // style={{ marginTop: marg1 }}
         selectable
         stackable
       >
+        <Table.Header>
+          <Table.Row>
+            <Table.HeaderCell
+              sorted={column === 'flag' ? direction : null}
+              onClick={() => dispatch({ type: 'CHANGE_SORT', column: 'flag' })}
+            >
+              Flag
+            </Table.HeaderCell>
+            <Table.HeaderCell
+              sorted={column === 'name' ? direction : null}
+              onClick={() => dispatch({ type: 'CHANGE_SORT', column: 'name' })}
+            >
+              Country
+            </Table.HeaderCell>
+
+            <Table.HeaderCell
+              sorted={column === 'region' ? direction : null}
+              onClick={() =>
+                dispatch({ type: 'CHANGE_SORT', column: 'region' })
+              }
+            >
+              Region
+            </Table.HeaderCell>
+            <Table.HeaderCell
+              sorted={column === 'subregion' ? direction : null}
+              onClick={() =>
+                dispatch({ type: 'CHANGE_SORT', column: 'subregion' })
+              }
+            >
+              Subregion
+            </Table.HeaderCell>
+            <Table.HeaderCell
+              sorted={column === 'capital' ? direction : null}
+              onClick={() =>
+                dispatch({ type: 'CHANGE_SORT', column: 'capital' })
+              }
+            >
+              Capital
+            </Table.HeaderCell>
+          </Table.Row>
+        </Table.Header>
         <Table.Body>
-          {filterBySubregion.map((c) => {
+          {data.map(({ id, flag, name, region, subregion, capital }) => {
+            //  console.log('name', name)
             return (
-              <Table.Row key={c.id} onClick={() => handleClick(c)}>
+              <Table.Row key={id} onClick={() => handleClick(name)}>
                 <Table.Cell width="two">
-                  <Image size="tiny" src={c.flag} alt="country flag" bordered />
+                  <Image size="tiny" src={flag} alt="country flag" bordered />
                 </Table.Cell>
-                <Table.Cell>{c.name}</Table.Cell>
+                <Table.Cell>{name}</Table.Cell>
+                <Table.Cell>{region}</Table.Cell>
+                <Table.Cell>{subregion}</Table.Cell>
+                <Table.Cell>{capital}</Table.Cell>
               </Table.Row>
             )
           })}
         </Table.Body>
       </Table>
-    </>
-  )
-
+    )
+  }
   return (
     <>
       <HeaderNav
@@ -156,22 +236,18 @@ const Countries = () => {
       ) : (
         <>
           <Container
-            style={
-              filterBySubregion.length < 250
-                ? { marginTop: 86 }
-                : { marginTop: 95 }
-            }
+            //  style={filterBySubregion.length < 250 ? { marginTop: 86 } : { marginTop: 95 }}
             fluid
           >
-            <Grid style={isMobile ? { marginTop: 0 } : { marginTop: -6 }}>
+            {/*             <Grid style={{ marginTop: -6 }}>
               {getSubregions[0].subregions.length > 0 ? (
                 <>
                   <Grid.Row>
                     <Menu
                       stackable
-                      size={isMobile ? 'mini' : 'large'}
+                      size="large"
                       fixed="top"
-                      style={isMobile ? { marginTop: 45 } : { marginTop: 45 }}
+                      style={{ marginTop: 45 }}
                       widths={7}
                     >
                       {regions.map((r) => {
@@ -187,9 +263,9 @@ const Countries = () => {
                     </Menu>
                     <Menu
                       stackable
-                      size={isMobile ? 'mini' : 'large'}
+                      size="large"
                       fixed="top"
-                      style={isMobile ? { marginTop: 75 } : { marginTop: 89 }}
+                      style={{ marginTop: 89 }}
                       widths={getSubregions[0].subregions.length}
                     >
                       {getSubregions[0].subregions.map((rs) => (
@@ -208,9 +284,9 @@ const Countries = () => {
                   <Grid.Row style={{ margin: 0, padding: 0 }}>
                     <Menu
                       stackable
-                      size={isMobile ? 'mini' : 'large'}
+                      size="large"
                       fixed="top"
-                      style={isMobile ? { marginTop: 45 } : { marginTop: 45 }}
+                      style={{ marginTop: 45 }}
                       widths={7}
                     >
                       {regions.map((r) => (
@@ -225,7 +301,7 @@ const Countries = () => {
                   </Grid.Row>
                 </>
               )}
-            </Grid>
+            </Grid> */}
             {filterBySubregion.length === 0 ? (
               <NoMatches />
             ) : (

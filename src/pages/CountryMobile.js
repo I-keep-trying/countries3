@@ -155,7 +155,7 @@ const Country = ({
           marginBottom: 0,
         }}
       >
-        <Breadcrumb size="small" style={{ marginLeft: 10, paddingTop: 4 }}>
+        <Breadcrumb size="mini" style={{ paddingLeft: 3, paddingTop: 4 }}>
           <Breadcrumb.Section
             key="All"
             style={{ cursor: 'pointer' }}
@@ -201,7 +201,7 @@ const Country = ({
         >
           <Button.Group attached="bottom">
             <Button
-              size="medium"
+              size="mini"
               basic={unit === 'metric' ? false : true}
               color="black"
               onClick={handleUnitButtonClick}
@@ -210,7 +210,7 @@ const Country = ({
               Metric
             </Button>
             <Button
-              size="medium"
+              size="mini"
               basic={unit === 'metric' ? true : false}
               color="black"
               onClick={handleUnitButtonClick}
@@ -222,7 +222,7 @@ const Country = ({
         </Menu.Item>
       </Menu>
 
-      <Container fluid style={{ padding: 14 }}>
+      <Container fluid style={{ padding: 4 }}>
         <Menu pointing secondary>
           <Menu.Item
             //  active
@@ -250,7 +250,7 @@ const Country = ({
         )}
         {activeTab === 'Details' && !isLoading ? (
           <Card fluid style={{ margin: 0 }}>
-            <Grid style={{ margin: 0 }} columns={4}>
+            <Grid style={{ margin: 0 }} columns={2}>
               <Grid.Row>
                 <Grid.Column style={{ paddingRight: 4 }}>
                   <Item.Group relaxed>
@@ -298,12 +298,14 @@ const Country = ({
                     </Item>
                   </Item.Group>
                 </Grid.Column>
-
+              </Grid.Row>
+              <Divider style={{ margin: 0 }} />
+              <Grid.Row>
                 <Grid.Column style={{ paddingRight: 4 }}>
                   <Item.Group relaxed>
                     <Item style={{ margin: 0 }}>
                       <Item.Content>
-                        <Item.Header>{'Size (Area)'} </Item.Header>
+                        <Item.Header>Size</Item.Header>
                         {country.area !== null ? (
                           <Item.Description>
                             {unit === 'metric'
@@ -320,7 +322,7 @@ const Country = ({
                   </Item.Group>
                 </Grid.Column>
 
-                <Grid.Column>
+                <Grid.Column style={{ paddingLeft: 0 }}>
                   <Item.Group relaxed>
                     <Item style={{ margin: 0 }}>
                       <Item.Content>
@@ -378,7 +380,7 @@ const Country = ({
 
               <Grid.Column style={{ paddingRight: 4 }}>
                 <Item.Group>
-                  <Item>
+                  <Item style={{ margin: 0 }}>
                     <Item.Content>
                       <Item.Header> Symbol</Item.Header>
                       <Item.Description>
@@ -399,7 +401,7 @@ const Country = ({
               </Grid.Column>
               <Grid.Column style={{ paddingLeft: 0, paddingRight: 0 }}>
                 <Item.Group>
-                  <Item>
+                  <Item style={{ margin: 0 }}>
                     <Item.Content>
                       <Item.Header> Code</Item.Header>
                       <Item.Description>
@@ -419,7 +421,7 @@ const Country = ({
               </Grid.Column>
               <Grid.Column style={{ paddingLeft: 0 }}>
                 <Item.Group>
-                  <Item>
+                  <Item style={{ margin: 0 }}>
                     <Item.Content>
                       <Item.Header>Name</Item.Header>
                       <Item.Description>

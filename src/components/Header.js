@@ -78,6 +78,7 @@ const HeaderNav = ({
           ) : (
             <Icon className="App-logo" name="globe" color="teal" size="big" />
           )} */}
+          <Icon className="App-logo" name="globe" color="teal" size="big" />
           <p> World Countries</p>
         </Menu.Item>
         <Menu.Item>
