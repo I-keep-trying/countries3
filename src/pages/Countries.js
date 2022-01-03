@@ -12,8 +12,9 @@ import {
 import Country from './Country'
 import HeaderNav from '../components/Header'
 import countriesApiData from '../all-countries'
-import countriesBasicInfo from '../countriesList'
+import countriesBasicInfo from '../countriesList2'
 import regions from '../regions'
+import { nanoid } from 'nanoid'
 
 const Countries = () => {
   const [input, setInput] = useState('')
@@ -24,6 +25,23 @@ const Countries = () => {
   const [, setCountry] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
 
+  const flags = (c) =>
+    countriesBasicInfo.filter((f) => (f.name === c ? f.flag : null))
+
+  const countriesData2 = countriesApiData.map((c) => {
+    return {
+      id: nanoid(),
+      name: c.name,
+      capital: c.capital,
+      region: c.region,
+      subregion: c.subregion,
+      population: c.population,
+      area: c.area,
+      flag: flags(c.name)[0].flag,
+    }
+  })
+
+  //  console.log('countriesData2', countriesData2[0])
   // get static lists of regions & subregions for labels on tabs
   const getSubregions = regions.filter((r) => {
     return r.region === activeRegion ? r : ''
@@ -56,8 +74,8 @@ const Countries = () => {
     const countryData = getCountryData.filter((cd) => {
       return cd.name.toLowerCase().startsWith(name.toLowerCase())
     })
-    console.log('handleClick:name', name)
-    console.log('countryData', getCountryData)
+    // console.log('handleClick:name', name)
+    // console.log('countryData', getCountryData)
     setIsLoading(true)
     // setCountry(countryData[0].name)
     setInput(name)
@@ -135,71 +153,94 @@ const Countries = () => {
     const { column, data, direction } = state
 
     return (
-      <Table
-        sortable
-        style={{ marginTop: 45 }}
-        // style={{ marginTop: marg1 }}
-        selectable
-        stackable
-      >
-        <Table.Header>
-          <Table.Row>
-            <Table.HeaderCell
-              sorted={column === 'flag' ? direction : null}
-              onClick={() => dispatch({ type: 'CHANGE_SORT', column: 'flag' })}
-            >
-              Flag
-            </Table.HeaderCell>
-            <Table.HeaderCell
-              sorted={column === 'name' ? direction : null}
-              onClick={() => dispatch({ type: 'CHANGE_SORT', column: 'name' })}
-            >
-              Country
-            </Table.HeaderCell>
+      <>
+        <Table
+          sortable
+          compact
+          // style={{ marginTop: 45 }}
+          style={{ marginTop: marg1 }}
+          selectable
+          stackable
+        >
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell
+                sorted={column === 'flag' ? direction : null}
+                onClick={() =>
+                  dispatch({ type: 'CHANGE_SORT', column: 'flag' })
+                }
+              >
+                Flag
+              </Table.HeaderCell>
+              <Table.HeaderCell
+                sorted={column === 'name' ? direction : null}
+                onClick={() =>
+                  dispatch({ type: 'CHANGE_SORT', column: 'name' })
+                }
+              >
+                Country
+              </Table.HeaderCell>
 
-            <Table.HeaderCell
-              sorted={column === 'region' ? direction : null}
-              onClick={() =>
-                dispatch({ type: 'CHANGE_SORT', column: 'region' })
+              <Table.HeaderCell
+                sorted={column === 'region' ? direction : null}
+                onClick={() =>
+                  dispatch({ type: 'CHANGE_SORT', column: 'region' })
+                }
+              >
+                Region
+              </Table.HeaderCell>
+              <Table.HeaderCell
+                sorted={column === 'subregion' ? direction : null}
+                onClick={() =>
+                  dispatch({ type: 'CHANGE_SORT', column: 'subregion' })
+                }
+              >
+                Subregion
+              </Table.HeaderCell>
+              <Table.HeaderCell
+                sorted={column === 'capital' ? direction : null}
+                onClick={() =>
+                  dispatch({ type: 'CHANGE_SORT', column: 'capital' })
+                }
+              >
+                Capital
+              </Table.HeaderCell>
+              <Table.HeaderCell
+                sorted={column === 'population' ? direction : null}
+                onClick={() =>
+                  dispatch({ type: 'CHANGE_SORT', column: 'population' })
+                }
+              >
+                Population
+              </Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            {data.map(
+              ({ id, flag, name, region, subregion, capital, population }) => {
+                //  console.log('name', name)
+                return (
+                  <Table.Row key={id} onClick={() => handleClick(name)}>
+                    <Table.Cell width="two">
+                      <Image
+                        size="tiny"
+                        src={flag}
+                        alt="country flag"
+                        bordered
+                      />
+                    </Table.Cell>
+                    <Table.Cell>{name}</Table.Cell>
+                    <Table.Cell>{region}</Table.Cell>
+                    <Table.Cell>{subregion}</Table.Cell>
+                    <Table.Cell>{capital}</Table.Cell>
+                    <Table.Cell>{population.toLocaleString()}</Table.Cell>
+                  </Table.Row>
+                )
               }
-            >
-              Region
-            </Table.HeaderCell>
-            <Table.HeaderCell
-              sorted={column === 'subregion' ? direction : null}
-              onClick={() =>
-                dispatch({ type: 'CHANGE_SORT', column: 'subregion' })
-              }
-            >
-              Subregion
-            </Table.HeaderCell>
-            <Table.HeaderCell
-              sorted={column === 'capital' ? direction : null}
-              onClick={() =>
-                dispatch({ type: 'CHANGE_SORT', column: 'capital' })
-              }
-            >
-              Capital
-            </Table.HeaderCell>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {data.map(({ id, flag, name, region, subregion, capital }) => {
-            //  console.log('name', name)
-            return (
-              <Table.Row key={id} onClick={() => handleClick(name)}>
-                <Table.Cell width="two">
-                  <Image size="tiny" src={flag} alt="country flag" bordered />
-                </Table.Cell>
-                <Table.Cell>{name}</Table.Cell>
-                <Table.Cell>{region}</Table.Cell>
-                <Table.Cell>{subregion}</Table.Cell>
-                <Table.Cell>{capital}</Table.Cell>
-              </Table.Row>
-            )
-          })}
-        </Table.Body>
-      </Table>
+            )}
+          </Table.Body>
+        </Table>
+      </>
     )
   }
   return (
@@ -236,10 +277,14 @@ const Countries = () => {
       ) : (
         <>
           <Container
-            //  style={filterBySubregion.length < 250 ? { marginTop: 86 } : { marginTop: 95 }}
+            style={
+              filterBySubregion.length < 250
+                ? { marginTop: 86 }
+                : { marginTop: 95 }
+            }
             fluid
           >
-            {/*             <Grid style={{ marginTop: -6 }}>
+            <Grid style={{ marginTop: -6 }}>
               {getSubregions[0].subregions.length > 0 ? (
                 <>
                   <Grid.Row>
@@ -251,7 +296,16 @@ const Countries = () => {
                       widths={7}
                     >
                       {regions.map((r) => {
-                        return (
+                        return r.region === 'All' ? (
+                          <Menu.Item
+                            key={r.id}
+                            // name={r.region}
+                            active={activeRegion === r.region}
+                            onClick={reset}
+                          >
+                            All Regions{' '}
+                          </Menu.Item>
+                        ) : (
                           <Menu.Item
                             key={r.id}
                             name={r.region}
@@ -289,19 +343,30 @@ const Countries = () => {
                       style={{ marginTop: 45 }}
                       widths={7}
                     >
-                      {regions.map((r) => (
-                        <Menu.Item
-                          key={r.id}
-                          name={r.region}
-                          active={activeRegion === r.region}
-                          onClick={handleRegionClick}
-                        />
-                      ))}
+                      {regions.map((r) => {
+                        return r.region === 'All' ? (
+                          <Menu.Item
+                            key={r.id}
+                            // name={r.region}
+                            active={activeRegion === r.region}
+                            onClick={reset}
+                          >
+                            All Regions{' '}
+                          </Menu.Item>
+                        ) : (
+                          <Menu.Item
+                            key={r.id}
+                            name={r.region}
+                            active={activeRegion === r.region}
+                            onClick={handleRegionClick}
+                          />
+                        )
+                      })}
                     </Menu>
                   </Grid.Row>
                 </>
               )}
-            </Grid> */}
+            </Grid>
             {filterBySubregion.length === 0 ? (
               <NoMatches />
             ) : (

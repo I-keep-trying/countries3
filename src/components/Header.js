@@ -95,7 +95,7 @@ const HeaderNav = ({
               type="search"
               value={input}
               onChange={handleChange}
-              placeholder="Start typing to search"
+              placeholder="Search by country name"
             />
           )}
         </Menu.Item>
