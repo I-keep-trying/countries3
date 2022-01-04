@@ -12,7 +12,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@here/maps-api-for-javascript": "^1.30.7",
     "axios": "^0.24.0",
+    "here-maps-react": "^2.0.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "nanoid": "^3.1.30",

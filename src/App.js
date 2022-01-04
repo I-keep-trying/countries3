@@ -4,7 +4,6 @@ import { Container } from 'semantic-ui-react'
 import './App.css'
 import Countries from './pages/Countries'
 // import CountriesMobile from './pages/CountriesMobile'
-import Table from './pages/TableSort'
 
 function App() {
   return (

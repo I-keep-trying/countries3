@@ -13,6 +13,7 @@ import {
   Item,
   Breadcrumb,
 } from 'semantic-ui-react'
+import countriesApiData from '../all-countries'
 import axios from 'axios'
 import Weather from '../components/Weather'
 import '../assets/css/owm-right.css'
@@ -113,6 +114,19 @@ const Country = ({
       <>{country.timezones[0]}</>
     )
   }
+
+  /*   const getCountryData = countriesApiData.filter((c) => {
+    return c.name.toLowerCase().startsWith(input.toLowerCase())
+  }) */
+
+  /*   const countryLink = (name) => {
+    const countryData = countriesApiData.filter((cd) => {
+      return cd.alpha3Code.toLowerCase().startsWith(name.toLowerCase())
+    })
+    console.log('handleClick:name', name)
+    console.log('countryData', countryData)
+    setCountry(countryData[0].name)
+  } */
 
   const regionLink = () => {
     setCountry(null)
@@ -256,6 +270,7 @@ const Country = ({
                   <Item.Group relaxed>
                     <Item style={{ margin: 0 }}>
                       <Item.Content>
+                        <Item.Header>Endonym </Item.Header>
                         <Popup
                           style={{
                             borderRadius: 0,
@@ -264,7 +279,7 @@ const Country = ({
                           hoverable
                           inverted
                           aria-label="An endonym (also known as autonym) is a common, internal name for a geographical place, group of people, or a language/dialect, that is used only inside that particular place, group, or linguistic community."
-                          trigger={<Item.Header>Endonym</Item.Header>}
+                          trigger={<Icon name="info circle"></Icon>}
                         >
                           <Popup.Content>
                             <>
@@ -365,6 +380,38 @@ const Country = ({
                       <Item.Description>
                         {getTimeZones(country)}
                       </Item.Description>
+                    </Item.Content>
+                  </Item>
+                </Item.Group>
+              </Grid.Column>
+              <Grid.Column style={{ paddingLeft: 0 }}>
+                <Item.Group relaxed>
+                  <Item style={{ margin: 0 }}>
+                    <Item.Content>
+                      <Item.Header>Bordering Countries</Item.Header>
+                      {/*  <Item.Description> */}
+                      {country.borders.map((b, i) => {
+                        const countryData = countriesApiData.filter((c) => {
+                          return c.alpha3Code
+                            .toLowerCase()
+                            .startsWith(b.toLowerCase())
+                        })
+                        console.log('index', i, ': border', b)
+                        console.log('countryData', countryData)
+                        return i + 1 === country.borders.length ? (
+                          <Item.Description
+                            onClick={() => alert(countryData[0].name)}
+                          >
+                            {b}
+                          </Item.Description>
+                        ) : (
+                          <Item.Description>
+                            {b}
+                            {', '}
+                          </Item.Description>
+                        )
+                      })}
+                      {/*  </Item.Description> */}
                     </Item.Content>
                   </Item>
                 </Item.Group>
